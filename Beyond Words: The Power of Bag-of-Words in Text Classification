@@ -1,0 +1,1563 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "toc_visible": true,
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/rahmadkholid/Text-Classification/blob/main/Beyond%20Words%3A%20The%20Power%20of%20Bag-of-Words%20in%20Text%20Classification\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# **Import Depedencies**"
+      ],
+      "metadata": {
+        "id": "18QjLb4yanxD"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import nltk\n",
+        "nltk.download('all')"
+      ],
+      "metadata": {
+        "id": "aUGBJslPTwtf",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "ba3d8420-8afd-4aae-ab08-28f9a4e8dc40"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "[nltk_data] Downloading collection 'all'\n",
+            "[nltk_data]    | \n",
+            "[nltk_data]    | Downloading package abc to /root/nltk_data...\n",
+            "[nltk_data]    |   Package abc is already up-to-date!\n",
+            "[nltk_data]    | Downloading package alpino to /root/nltk_data...\n",
+            "[nltk_data]    |   Package alpino is already up-to-date!\n",
+            "[nltk_data]    | Downloading package averaged_perceptron_tagger to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package averaged_perceptron_tagger is already up-\n",
+            "[nltk_data]    |       to-date!\n",
+            "[nltk_data]    | Downloading package averaged_perceptron_tagger_ru to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package averaged_perceptron_tagger_ru is already\n",
+            "[nltk_data]    |       up-to-date!\n",
+            "[nltk_data]    | Downloading package basque_grammars to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package basque_grammars is already up-to-date!\n",
+            "[nltk_data]    | Downloading package bcp47 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package bcp47 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package biocreative_ppi to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package biocreative_ppi is already up-to-date!\n",
+            "[nltk_data]    | Downloading package bllip_wsj_no_aux to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package bllip_wsj_no_aux is already up-to-date!\n",
+            "[nltk_data]    | Downloading package book_grammars to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package book_grammars is already up-to-date!\n",
+            "[nltk_data]    | Downloading package brown to /root/nltk_data...\n",
+            "[nltk_data]    |   Package brown is already up-to-date!\n",
+            "[nltk_data]    | Downloading package brown_tei to /root/nltk_data...\n",
+            "[nltk_data]    |   Package brown_tei is already up-to-date!\n",
+            "[nltk_data]    | Downloading package cess_cat to /root/nltk_data...\n",
+            "[nltk_data]    |   Package cess_cat is already up-to-date!\n",
+            "[nltk_data]    | Downloading package cess_esp to /root/nltk_data...\n",
+            "[nltk_data]    |   Package cess_esp is already up-to-date!\n",
+            "[nltk_data]    | Downloading package chat80 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package chat80 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package city_database to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package city_database is already up-to-date!\n",
+            "[nltk_data]    | Downloading package cmudict to /root/nltk_data...\n",
+            "[nltk_data]    |   Package cmudict is already up-to-date!\n",
+            "[nltk_data]    | Downloading package comparative_sentences to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package comparative_sentences is already up-to-\n",
+            "[nltk_data]    |       date!\n",
+            "[nltk_data]    | Downloading package comtrans to /root/nltk_data...\n",
+            "[nltk_data]    |   Package comtrans is already up-to-date!\n",
+            "[nltk_data]    | Downloading package conll2000 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package conll2000 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package conll2002 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package conll2002 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package conll2007 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package conll2007 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package crubadan to /root/nltk_data...\n",
+            "[nltk_data]    |   Package crubadan is already up-to-date!\n",
+            "[nltk_data]    | Downloading package dependency_treebank to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package dependency_treebank is already up-to-date!\n",
+            "[nltk_data]    | Downloading package dolch to /root/nltk_data...\n",
+            "[nltk_data]    |   Package dolch is already up-to-date!\n",
+            "[nltk_data]    | Downloading package europarl_raw to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package europarl_raw is already up-to-date!\n",
+            "[nltk_data]    | Downloading package extended_omw to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package extended_omw is already up-to-date!\n",
+            "[nltk_data]    | Downloading package floresta to /root/nltk_data...\n",
+            "[nltk_data]    |   Package floresta is already up-to-date!\n",
+            "[nltk_data]    | Downloading package framenet_v15 to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package framenet_v15 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package framenet_v17 to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package framenet_v17 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package gazetteers to /root/nltk_data...\n",
+            "[nltk_data]    |   Package gazetteers is already up-to-date!\n",
+            "[nltk_data]    | Downloading package genesis to /root/nltk_data...\n",
+            "[nltk_data]    |   Package genesis is already up-to-date!\n",
+            "[nltk_data]    | Downloading package gutenberg to /root/nltk_data...\n",
+            "[nltk_data]    |   Package gutenberg is already up-to-date!\n",
+            "[nltk_data]    | Downloading package ieer to /root/nltk_data...\n",
+            "[nltk_data]    |   Package ieer is already up-to-date!\n",
+            "[nltk_data]    | Downloading package inaugural to /root/nltk_data...\n",
+            "[nltk_data]    |   Package inaugural is already up-to-date!\n",
+            "[nltk_data]    | Downloading package indian to /root/nltk_data...\n",
+            "[nltk_data]    |   Package indian is already up-to-date!\n",
+            "[nltk_data]    | Downloading package jeita to /root/nltk_data...\n",
+            "[nltk_data]    |   Package jeita is already up-to-date!\n",
+            "[nltk_data]    | Downloading package kimmo to /root/nltk_data...\n",
+            "[nltk_data]    |   Package kimmo is already up-to-date!\n",
+            "[nltk_data]    | Downloading package knbc to /root/nltk_data...\n",
+            "[nltk_data]    |   Package knbc is already up-to-date!\n",
+            "[nltk_data]    | Downloading package large_grammars to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package large_grammars is already up-to-date!\n",
+            "[nltk_data]    | Downloading package lin_thesaurus to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package lin_thesaurus is already up-to-date!\n",
+            "[nltk_data]    | Downloading package mac_morpho to /root/nltk_data...\n",
+            "[nltk_data]    |   Package mac_morpho is already up-to-date!\n",
+            "[nltk_data]    | Downloading package machado to /root/nltk_data...\n",
+            "[nltk_data]    |   Package machado is already up-to-date!\n",
+            "[nltk_data]    | Downloading package masc_tagged to /root/nltk_data...\n",
+            "[nltk_data]    |   Package masc_tagged is already up-to-date!\n",
+            "[nltk_data]    | Downloading package maxent_ne_chunker to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package maxent_ne_chunker is already up-to-date!\n",
+            "[nltk_data]    | Downloading package maxent_treebank_pos_tagger to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package maxent_treebank_pos_tagger is already up-\n",
+            "[nltk_data]    |       to-date!\n",
+            "[nltk_data]    | Downloading package moses_sample to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package moses_sample is already up-to-date!\n",
+            "[nltk_data]    | Downloading package movie_reviews to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package movie_reviews is already up-to-date!\n",
+            "[nltk_data]    | Downloading package mte_teip5 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package mte_teip5 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package mwa_ppdb to /root/nltk_data...\n",
+            "[nltk_data]    |   Package mwa_ppdb is already up-to-date!\n",
+            "[nltk_data]    | Downloading package names to /root/nltk_data...\n",
+            "[nltk_data]    |   Package names is already up-to-date!\n",
+            "[nltk_data]    | Downloading package nombank.1.0 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package nombank.1.0 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package nonbreaking_prefixes to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package nonbreaking_prefixes is already up-to-date!\n",
+            "[nltk_data]    | Downloading package nps_chat to /root/nltk_data...\n",
+            "[nltk_data]    |   Package nps_chat is already up-to-date!\n",
+            "[nltk_data]    | Downloading package omw to /root/nltk_data...\n",
+            "[nltk_data]    |   Package omw is already up-to-date!\n",
+            "[nltk_data]    | Downloading package omw-1.4 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package omw-1.4 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package opinion_lexicon to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package opinion_lexicon is already up-to-date!\n",
+            "[nltk_data]    | Downloading package panlex_swadesh to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package panlex_swadesh is already up-to-date!\n",
+            "[nltk_data]    | Downloading package paradigms to /root/nltk_data...\n",
+            "[nltk_data]    |   Package paradigms is already up-to-date!\n",
+            "[nltk_data]    | Downloading package pe08 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package pe08 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package perluniprops to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package perluniprops is already up-to-date!\n",
+            "[nltk_data]    | Downloading package pil to /root/nltk_data...\n",
+            "[nltk_data]    |   Package pil is already up-to-date!\n",
+            "[nltk_data]    | Downloading package pl196x to /root/nltk_data...\n",
+            "[nltk_data]    |   Package pl196x is already up-to-date!\n",
+            "[nltk_data]    | Downloading package porter_test to /root/nltk_data...\n",
+            "[nltk_data]    |   Package porter_test is already up-to-date!\n",
+            "[nltk_data]    | Downloading package ppattach to /root/nltk_data...\n",
+            "[nltk_data]    |   Package ppattach is already up-to-date!\n",
+            "[nltk_data]    | Downloading package problem_reports to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package problem_reports is already up-to-date!\n",
+            "[nltk_data]    | Downloading package product_reviews_1 to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package product_reviews_1 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package product_reviews_2 to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package product_reviews_2 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package propbank to /root/nltk_data...\n",
+            "[nltk_data]    |   Package propbank is already up-to-date!\n",
+            "[nltk_data]    | Downloading package pros_cons to /root/nltk_data...\n",
+            "[nltk_data]    |   Package pros_cons is already up-to-date!\n",
+            "[nltk_data]    | Downloading package ptb to /root/nltk_data...\n",
+            "[nltk_data]    |   Package ptb is already up-to-date!\n",
+            "[nltk_data]    | Downloading package punkt to /root/nltk_data...\n",
+            "[nltk_data]    |   Package punkt is already up-to-date!\n",
+            "[nltk_data]    | Downloading package qc to /root/nltk_data...\n",
+            "[nltk_data]    |   Package qc is already up-to-date!\n",
+            "[nltk_data]    | Downloading package reuters to /root/nltk_data...\n",
+            "[nltk_data]    |   Package reuters is already up-to-date!\n",
+            "[nltk_data]    | Downloading package rslp to /root/nltk_data...\n",
+            "[nltk_data]    |   Package rslp is already up-to-date!\n",
+            "[nltk_data]    | Downloading package rte to /root/nltk_data...\n",
+            "[nltk_data]    |   Package rte is already up-to-date!\n",
+            "[nltk_data]    | Downloading package sample_grammars to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package sample_grammars is already up-to-date!\n",
+            "[nltk_data]    | Downloading package semcor to /root/nltk_data...\n",
+            "[nltk_data]    |   Package semcor is already up-to-date!\n",
+            "[nltk_data]    | Downloading package senseval to /root/nltk_data...\n",
+            "[nltk_data]    |   Package senseval is already up-to-date!\n",
+            "[nltk_data]    | Downloading package sentence_polarity to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package sentence_polarity is already up-to-date!\n",
+            "[nltk_data]    | Downloading package sentiwordnet to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package sentiwordnet is already up-to-date!\n",
+            "[nltk_data]    | Downloading package shakespeare to /root/nltk_data...\n",
+            "[nltk_data]    |   Package shakespeare is already up-to-date!\n",
+            "[nltk_data]    | Downloading package sinica_treebank to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package sinica_treebank is already up-to-date!\n",
+            "[nltk_data]    | Downloading package smultron to /root/nltk_data...\n",
+            "[nltk_data]    |   Package smultron is already up-to-date!\n",
+            "[nltk_data]    | Downloading package snowball_data to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package snowball_data is already up-to-date!\n",
+            "[nltk_data]    | Downloading package spanish_grammars to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package spanish_grammars is already up-to-date!\n",
+            "[nltk_data]    | Downloading package state_union to /root/nltk_data...\n",
+            "[nltk_data]    |   Package state_union is already up-to-date!\n",
+            "[nltk_data]    | Downloading package stopwords to /root/nltk_data...\n",
+            "[nltk_data]    |   Package stopwords is already up-to-date!\n",
+            "[nltk_data]    | Downloading package subjectivity to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package subjectivity is already up-to-date!\n",
+            "[nltk_data]    | Downloading package swadesh to /root/nltk_data...\n",
+            "[nltk_data]    |   Package swadesh is already up-to-date!\n",
+            "[nltk_data]    | Downloading package switchboard to /root/nltk_data...\n",
+            "[nltk_data]    |   Package switchboard is already up-to-date!\n",
+            "[nltk_data]    | Downloading package tagsets to /root/nltk_data...\n",
+            "[nltk_data]    |   Package tagsets is already up-to-date!\n",
+            "[nltk_data]    | Downloading package timit to /root/nltk_data...\n",
+            "[nltk_data]    |   Package timit is already up-to-date!\n",
+            "[nltk_data]    | Downloading package toolbox to /root/nltk_data...\n",
+            "[nltk_data]    |   Package toolbox is already up-to-date!\n",
+            "[nltk_data]    | Downloading package treebank to /root/nltk_data...\n",
+            "[nltk_data]    |   Package treebank is already up-to-date!\n",
+            "[nltk_data]    | Downloading package twitter_samples to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package twitter_samples is already up-to-date!\n",
+            "[nltk_data]    | Downloading package udhr to /root/nltk_data...\n",
+            "[nltk_data]    |   Package udhr is already up-to-date!\n",
+            "[nltk_data]    | Downloading package udhr2 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package udhr2 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package unicode_samples to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package unicode_samples is already up-to-date!\n",
+            "[nltk_data]    | Downloading package universal_tagset to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package universal_tagset is already up-to-date!\n",
+            "[nltk_data]    | Downloading package universal_treebanks_v20 to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package universal_treebanks_v20 is already up-to-\n",
+            "[nltk_data]    |       date!\n",
+            "[nltk_data]    | Downloading package vader_lexicon to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package vader_lexicon is already up-to-date!\n",
+            "[nltk_data]    | Downloading package verbnet to /root/nltk_data...\n",
+            "[nltk_data]    |   Package verbnet is already up-to-date!\n",
+            "[nltk_data]    | Downloading package verbnet3 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package verbnet3 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package webtext to /root/nltk_data...\n",
+            "[nltk_data]    |   Package webtext is already up-to-date!\n",
+            "[nltk_data]    | Downloading package wmt15_eval to /root/nltk_data...\n",
+            "[nltk_data]    |   Package wmt15_eval is already up-to-date!\n",
+            "[nltk_data]    | Downloading package word2vec_sample to\n",
+            "[nltk_data]    |     /root/nltk_data...\n",
+            "[nltk_data]    |   Package word2vec_sample is already up-to-date!\n",
+            "[nltk_data]    | Downloading package wordnet to /root/nltk_data...\n",
+            "[nltk_data]    |   Package wordnet is already up-to-date!\n",
+            "[nltk_data]    | Downloading package wordnet2021 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package wordnet2021 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package wordnet2022 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package wordnet2022 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package wordnet31 to /root/nltk_data...\n",
+            "[nltk_data]    |   Package wordnet31 is already up-to-date!\n",
+            "[nltk_data]    | Downloading package wordnet_ic to /root/nltk_data...\n",
+            "[nltk_data]    |   Package wordnet_ic is already up-to-date!\n",
+            "[nltk_data]    | Downloading package words to /root/nltk_data...\n",
+            "[nltk_data]    |   Package words is already up-to-date!\n",
+            "[nltk_data]    | Downloading package ycoe to /root/nltk_data...\n",
+            "[nltk_data]    |   Package ycoe is already up-to-date!\n",
+            "[nltk_data]    | \n",
+            "[nltk_data]  Done downloading collection all\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "True"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 73
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# **Inisialisasi Teks Rujukan (Data Train)**\n",
+        "\n",
+        "Dipilih 3 topik terkait Kesehatan, Olahraga, dan Keuangan, yaitu **Kesehatan Mental**, **Sepak Bola**, dan **Pasar Saham** secara berturut-turut. Berikut teks rujukan untuk masing-masing topik:\n",
+        "\n",
+        "* **Kesehatan Mental** <br>\n",
+        "\"Mental health includes our emotional, psychological, and social well-being. It affects how we think, feel, and act, and helps determine how we handle stress, relate to others, and make choices. Mental health is important at every stage of life, from childhood and adolescence through adulthood. Over the course of your life, if you experience mental health problems, your thinking, mood, and behavior could be affected.\"\n",
+        "\n",
+        "* **Sepak Bola** <br>\n",
+        "\"Barcelona secured a 3-2 comeback win away against Paris Saint-Germain in the first leg of their Champions League quarterfinal tie on Wednesday, serving a blow to the Parisians' hopes of winning their first title. The Spanish side, looking to flex its muscles in Europe once again, had taken the lead through Raphinha but found itself 2-1 down after the break after two quick goals from the host.\"\n",
+        "\n",
+        "* **Pasar Saham** <br>\n",
+        "\"Asian stocks fell on Thursday as disappointing earnings forecasts from Facebook parent Meta Platforms (NASDAQ:META) hammered tech shares, while the yen's slump past 155 per dollar for the first time since 1990 raised the spectre of intervention from Tokyo. A 15% dive in shares of Meta in extended trading after the Instagram parent forecast lighter-than-expected current quarter revenue and higher expenses soured the mood, sparking a sell-off in U.S. tech and tech-related stocks.\""
+      ],
+      "metadata": {
+        "id": "VM7-Lw5zQLYr"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Inisialisasi teks\n",
+        "teks_kesehatan_mental = \"Mental health includes our emotional, psychological, and social well-being. It affects how we think, feel, and act, and helps determine how we handle stress, relate to others, and make choices. Mental health is important at every stage of life, from childhood and adolescence through adulthood. Over the course of your life, if you experience mental health problems, your thinking, mood, and behavior could be affected.\"\n",
+        "teks_sepak_bola = \"Barcelona secured a 3-2 comeback win away against Paris Saint-Germain in the first leg of their Champions League quarterfinal tie on Wednesday, serving a blow to the Parisians' hopes of winning their first title. The Spanish side, looking to flex its muscles in Europe once again, had taken the lead through Raphinha but found itself 2-1 down after the break after two quick goals from the host.\"\n",
+        "teks_pasar_saham = \"Asian stocks fell on Thursday as disappointing earnings forecasts from Facebook parent Meta Platforms (NASDAQ:META) hammered tech shares, while the yen's slump past 155 per dollar for the first time since 1990 raised the spectre of intervention from Tokyo. A 15% dive in shares of Meta in extended trading after the Instagram parent forecast lighter-than-expected current quarter revenue and higher expenses soured the mood, sparking a sell-off in U.S. tech and tech-related stocks.\""
+      ],
+      "metadata": {
+        "id": "AbghVZ8DQPxx"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Ubah menjadi lower case\n",
+        "teks_kesehatan_mental_lower = teks_kesehatan_mental.lower()\n",
+        "teks_sepak_bola_lower = teks_sepak_bola.lower()\n",
+        "teks_pasar_saham_lower = teks_pasar_saham.lower()"
+      ],
+      "metadata": {
+        "id": "i-RPmR4zTZ-e"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Tampilkan hasilnya\n",
+        "print(teks_kesehatan_mental_lower,'\\n')\n",
+        "print(teks_sepak_bola_lower,'\\n')\n",
+        "print(teks_pasar_saham_lower)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Pw7bksfATHnd",
+        "outputId": "f0def7cf-227f-4a1d-d246-f04f9d98f932"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "mental health includes our emotional, psychological, and social well-being. it affects how we think, feel, and act, and helps determine how we handle stress, relate to others, and make choices. mental health is important at every stage of life, from childhood and adolescence through adulthood. over the course of your life, if you experience mental health problems, your thinking, mood, and behavior could be affected. \n",
+            "\n",
+            "barcelona secured a 3-2 comeback win away against paris saint-germain in the first leg of their champions league quarterfinal tie on wednesday, serving a blow to the parisians' hopes of winning their first title. the spanish side, looking to flex its muscles in europe once again, had taken the lead through raphinha but found itself 2-1 down after the break after two quick goals from the host. \n",
+            "\n",
+            "asian stocks fell on thursday as disappointing earnings forecasts from facebook parent meta platforms (nasdaq:meta) hammered tech shares, while the yen's slump past 155 per dollar for the first time since 1990 raised the spectre of intervention from tokyo. a 15% dive in shares of meta in extended trading after the instagram parent forecast lighter-than-expected current quarter revenue and higher expenses soured the mood, sparking a sell-off in u.s. tech and tech-related stocks.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# **Tokenization**"
+      ],
+      "metadata": {
+        "id": "L6Jcui9GS0Jp"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Import library nltk\n",
+        "from nltk import tokenize\n",
+        "\n",
+        "# Proses tokenisasi untuk kesehatan mental\n",
+        "token_kesehatan_mental = tokenize.word_tokenize(teks_kesehatan_mental_lower)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_kesehatan_mental)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "S4wT913SS6LI",
+        "outputId": "c08c80df-5d4e-4333-9650-043a3ae32aec"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['mental', 'health', 'includes', 'our', 'emotional', ',', 'psychological', ',', 'and', 'social', 'well-being', '.', 'it', 'affects', 'how', 'we', 'think', ',', 'feel', ',', 'and', 'act', ',', 'and', 'helps', 'determine', 'how', 'we', 'handle', 'stress', ',', 'relate', 'to', 'others', ',', 'and', 'make', 'choices', '.', 'mental', 'health', 'is', 'important', 'at', 'every', 'stage', 'of', 'life', ',', 'from', 'childhood', 'and', 'adolescence', 'through', 'adulthood', '.', 'over', 'the', 'course', 'of', 'your', 'life', ',', 'if', 'you', 'experience', 'mental', 'health', 'problems', ',', 'your', 'thinking', ',', 'mood', ',', 'and', 'behavior', 'could', 'be', 'affected', '.']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Proses tokenisasi untuk sepak bola\n",
+        "token_sepak_bola = tokenize.word_tokenize(teks_sepak_bola_lower)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_sepak_bola)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ojeHtrZ2Ud8C",
+        "outputId": "21a0b1bb-2596-4364-8ac7-20c1d4b14cde"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['barcelona', 'secured', 'a', '3-2', 'comeback', 'win', 'away', 'against', 'paris', 'saint-germain', 'in', 'the', 'first', 'leg', 'of', 'their', 'champions', 'league', 'quarterfinal', 'tie', 'on', 'wednesday', ',', 'serving', 'a', 'blow', 'to', 'the', 'parisians', \"'\", 'hopes', 'of', 'winning', 'their', 'first', 'title', '.', 'the', 'spanish', 'side', ',', 'looking', 'to', 'flex', 'its', 'muscles', 'in', 'europe', 'once', 'again', ',', 'had', 'taken', 'the', 'lead', 'through', 'raphinha', 'but', 'found', 'itself', '2-1', 'down', 'after', 'the', 'break', 'after', 'two', 'quick', 'goals', 'from', 'the', 'host', '.']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Proses tokenisasi untuk pasar saham\n",
+        "token_pasar_saham = tokenize.word_tokenize(teks_pasar_saham_lower)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_pasar_saham)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "K9vh5dTnExN9",
+        "outputId": "700f933f-629e-4c71-9472-28573bdc4298"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['asian', 'stocks', 'fell', 'on', 'thursday', 'as', 'disappointing', 'earnings', 'forecasts', 'from', 'facebook', 'parent', 'meta', 'platforms', '(', 'nasdaq', ':', 'meta', ')', 'hammered', 'tech', 'shares', ',', 'while', 'the', 'yen', \"'s\", 'slump', 'past', '155', 'per', 'dollar', 'for', 'the', 'first', 'time', 'since', '1990', 'raised', 'the', 'spectre', 'of', 'intervention', 'from', 'tokyo', '.', 'a', '15', '%', 'dive', 'in', 'shares', 'of', 'meta', 'in', 'extended', 'trading', 'after', 'the', 'instagram', 'parent', 'forecast', 'lighter-than-expected', 'current', 'quarter', 'revenue', 'and', 'higher', 'expenses', 'soured', 'the', 'mood', ',', 'sparking', 'a', 'sell-off', 'in', 'u.s.', 'tech', 'and', 'tech-related', 'stocks', '.']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## **Removing Stopwords & Punctuations**\n",
+        "\n",
+        "Jika kata pada hasil tokenisasi merupakan stopwords atau punctuations (tanda baca) maka akan dihapus"
+      ],
+      "metadata": {
+        "id": "EHN1fgQaSqog"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Import library\n",
+        "from nltk import corpus\n",
+        "\n",
+        "# Stopwords pada bahasa inggris\n",
+        "stopword_english = corpus.stopwords.words('english')\n",
+        "\n",
+        "# Tampilkan stopwords\n",
+        "print(stopword_english)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "I6Cwi-q8SyvK",
+        "outputId": "2d2abc21-5ec3-4b8c-9949-3693a978b923"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', \"you're\", \"you've\", \"you'll\", \"you'd\", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', \"she's\", 'her', 'hers', 'herself', 'it', \"it's\", 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', \"that'll\", 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', \"don't\", 'should', \"should've\", 'now', 'd', 'll', 'm', 'o', 're', 've', 'y', 'ain', 'aren', \"aren't\", 'couldn', \"couldn't\", 'didn', \"didn't\", 'doesn', \"doesn't\", 'hadn', \"hadn't\", 'hasn', \"hasn't\", 'haven', \"haven't\", 'isn', \"isn't\", 'ma', 'mightn', \"mightn't\", 'mustn', \"mustn't\", 'needn', \"needn't\", 'shan', \"shan't\", 'shouldn', \"shouldn't\", 'wasn', \"wasn't\", 'weren', \"weren't\", 'won', \"won't\", 'wouldn', \"wouldn't\"]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Import library\n",
+        "import string\n",
+        "\n",
+        "# Punctuations\n",
+        "str_punct = string.punctuation\n",
+        "\n",
+        "# Tampilkan punctuations\n",
+        "print(str_punct)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "PS6F9ePtXFQN",
+        "outputId": "c0a91b64-db14-44f2-948f-8a85b003495e"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Proses menghapus stopwords dan punctuations (tanda baca) pada token kesehatan mental\n",
+        "for kata in token_kesehatan_mental:\n",
+        "    if(kata in stopword_english or kata in str_punct):\n",
+        "        token_kesehatan_mental.remove(kata)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_kesehatan_mental)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ziixORSGU1R-",
+        "outputId": "d4e7075f-4fab-4aaf-ad8c-5c468c886a99"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['mental', 'health', 'includes', 'emotional', 'psychological', 'social', 'well-being', 'it', 'affects', 'we', 'think', 'feel', 'and', 'act', 'and', 'helps', 'determine', 'we', 'handle', 'stress', 'relate', 'others', 'and', 'make', 'choices', 'mental', 'health', 'important', 'every', 'stage', 'life', 'from', 'childhood', 'and', 'adolescence', 'adulthood', 'over', 'course', 'your', 'life', 'if', 'experience', 'mental', 'health', 'problems', 'your', 'thinking', 'mood', 'and', 'behavior', 'could', 'affected']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Proses menghapus stopwords dan punctuations (tanda baca) pada token sepak bola\n",
+        "for kata in token_sepak_bola:\n",
+        "    if(kata in stopword_english or kata in str_punct):\n",
+        "        token_sepak_bola.remove(kata)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_sepak_bola)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-px_zfqDW6GZ",
+        "outputId": "73345368-2904-48ad-eeae-02a9d9311594"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['barcelona', 'secured', '3-2', 'comeback', 'win', 'away', 'paris', 'saint-germain', 'first', 'leg', 'champions', 'league', 'quarterfinal', 'tie', 'wednesday', 'serving', 'blow', 'parisians', 'hopes', 'winning', 'their', 'first', 'title', 'the', 'spanish', 'side', 'looking', 'flex', 'muscles', 'europe', 'again', 'had', 'taken', 'the', 'lead', 'raphinha', 'found', '2-1', 'the', 'break', 'after', 'two', 'quick', 'goals', 'the', 'host']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Proses menghapus stopwords dan punctuations (tanda baca) pada token pasar saham\n",
+        "for kata in token_pasar_saham:\n",
+        "    if(kata in stopword_english or kata in str_punct):\n",
+        "        token_pasar_saham.remove(kata)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_pasar_saham)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "l_TLREEMGxG0",
+        "outputId": "4c8cabb2-5d6c-4b63-fbe4-ab5fa8f8c711"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['asian', 'stocks', 'fell', 'thursday', 'disappointing', 'earnings', 'forecasts', 'facebook', 'parent', 'meta', 'platforms', 'nasdaq', 'meta', 'hammered', 'tech', 'shares', 'while', 'yen', \"'s\", 'slump', 'past', '155', 'per', 'dollar', 'first', 'time', 'since', '1990', 'raised', 'spectre', 'intervention', 'tokyo', '15', 'dive', 'shares', 'meta', 'extended', 'trading', 'the', 'instagram', 'parent', 'forecast', 'lighter-than-expected', 'current', 'quarter', 'revenue', 'higher', 'expenses', 'soured', 'the', 'mood', 'sparking', 'a', 'sell-off', 'u.s.', 'tech', 'tech-related', 'stocks']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# **Lemmatization**\n",
+        "\n",
+        "Proses membuang karakter imbuhan"
+      ],
+      "metadata": {
+        "id": "NR_Wzce7WXAJ"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Import library yang dibutuhkan\n",
+        "from nltk import stem\n",
+        "\n",
+        "# Buat object dari class WordNetLemmatizer\n",
+        "lemmatizer = stem.WordNetLemmatizer()"
+      ],
+      "metadata": {
+        "id": "sJOGy8WRV16N"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Buat list kosong untuk menampung hasil lemmatization\n",
+        "token_kesehatan_mental_lemmatized = list()\n",
+        "\n",
+        "# Proses lemmatization pada token kesehatan mental\n",
+        "for kata in token_kesehatan_mental:\n",
+        "    lemmatized = lemmatizer.lemmatize(kata, pos = 'v')\n",
+        "    token_kesehatan_mental_lemmatized.append(lemmatized)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_kesehatan_mental_lemmatized)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "k9F8ILRMXm4g",
+        "outputId": "dcbf20ad-d928-4f43-b3cd-23c6cc921ab3"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['mental', 'health', 'include', 'emotional', 'psychological', 'social', 'well-being', 'it', 'affect', 'we', 'think', 'feel', 'and', 'act', 'and', 'help', 'determine', 'we', 'handle', 'stress', 'relate', 'others', 'and', 'make', 'choices', 'mental', 'health', 'important', 'every', 'stage', 'life', 'from', 'childhood', 'and', 'adolescence', 'adulthood', 'over', 'course', 'your', 'life', 'if', 'experience', 'mental', 'health', 'problems', 'your', 'think', 'mood', 'and', 'behavior', 'could', 'affect']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Buat list kosong untuk menampung hasil lemmatization\n",
+        "token_sepak_bola_lemmatized = list()\n",
+        "\n",
+        "# Proses lemmatization pada token sepak bola\n",
+        "for kata in token_sepak_bola:\n",
+        "    lemmatized = lemmatizer.lemmatize(kata, pos = 'v')\n",
+        "    token_sepak_bola_lemmatized.append(lemmatized)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_sepak_bola_lemmatized)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "k8Hkp5VbYKSY",
+        "outputId": "083066d7-ee27-45e6-e22b-77f183453b1b"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['barcelona', 'secure', '3-2', 'comeback', 'win', 'away', 'paris', 'saint-germain', 'first', 'leg', 'champion', 'league', 'quarterfinal', 'tie', 'wednesday', 'serve', 'blow', 'parisians', 'hop', 'win', 'their', 'first', 'title', 'the', 'spanish', 'side', 'look', 'flex', 'muscle', 'europe', 'again', 'have', 'take', 'the', 'lead', 'raphinha', 'find', '2-1', 'the', 'break', 'after', 'two', 'quick', 'goals', 'the', 'host']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Buat list kosong untuk menampung hasil lemmatization\n",
+        "token_pasar_saham_lemmatized = list()\n",
+        "\n",
+        "# Proses lemmatization pada token pasar saham\n",
+        "for kata in token_pasar_saham:\n",
+        "    lemmatized = lemmatizer.lemmatize(kata, pos = 'v')\n",
+        "    token_pasar_saham_lemmatized.append(lemmatized)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_pasar_saham_lemmatized)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "MEhXP6tGIIfz",
+        "outputId": "e985d9c6-01c6-4972-dac2-589fe82161e6"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['asian', 'stock', 'fell', 'thursday', 'disappoint', 'earn', 'forecast', 'facebook', 'parent', 'meta', 'platforms', 'nasdaq', 'meta', 'hammer', 'tech', 'share', 'while', 'yen', \"'s\", 'slump', 'past', '155', 'per', 'dollar', 'first', 'time', 'since', '1990', 'raise', 'spectre', 'intervention', 'tokyo', '15', 'dive', 'share', 'meta', 'extend', 'trade', 'the', 'instagram', 'parent', 'forecast', 'lighter-than-expected', 'current', 'quarter', 'revenue', 'higher', 'expense', 'sour', 'the', 'mood', 'spark', 'a', 'sell-off', 'u.s.', 'tech', 'tech-related', 'stock']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Coba tampilkan perbandingannya\n",
+        "print(f'Token sebelum di lemmatization : {token_kesehatan_mental}')\n",
+        "print(f'Token setelah di lemmatization : {token_kesehatan_mental_lemmatized}\\n')\n",
+        "\n",
+        "print(f'Token sebelum di lemmatization : {token_sepak_bola}')\n",
+        "print(f'Token setelah di lemmatization : {token_sepak_bola_lemmatized}\\n')\n",
+        "\n",
+        "print(f'Token sebelum di lemmatization : {token_pasar_saham}')\n",
+        "print(f'Token setelah di lemmatization : {token_pasar_saham_lemmatized}\\n')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "rLoGjm8bYpvp",
+        "outputId": "5ae229f5-6188-465d-a1de-ef04e946f8ee"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Token sebelum di lemmatization : ['mental', 'health', 'includes', 'emotional', 'psychological', 'social', 'well-being', 'it', 'affects', 'we', 'think', 'feel', 'and', 'act', 'and', 'helps', 'determine', 'we', 'handle', 'stress', 'relate', 'others', 'and', 'make', 'choices', 'mental', 'health', 'important', 'every', 'stage', 'life', 'from', 'childhood', 'and', 'adolescence', 'adulthood', 'over', 'course', 'your', 'life', 'if', 'experience', 'mental', 'health', 'problems', 'your', 'thinking', 'mood', 'and', 'behavior', 'could', 'affected']\n",
+            "Token setelah di lemmatization : ['mental', 'health', 'include', 'emotional', 'psychological', 'social', 'well-being', 'it', 'affect', 'we', 'think', 'feel', 'and', 'act', 'and', 'help', 'determine', 'we', 'handle', 'stress', 'relate', 'others', 'and', 'make', 'choices', 'mental', 'health', 'important', 'every', 'stage', 'life', 'from', 'childhood', 'and', 'adolescence', 'adulthood', 'over', 'course', 'your', 'life', 'if', 'experience', 'mental', 'health', 'problems', 'your', 'think', 'mood', 'and', 'behavior', 'could', 'affect']\n",
+            "\n",
+            "Token sebelum di lemmatization : ['barcelona', 'secured', '3-2', 'comeback', 'win', 'away', 'paris', 'saint-germain', 'first', 'leg', 'champions', 'league', 'quarterfinal', 'tie', 'wednesday', 'serving', 'blow', 'parisians', 'hopes', 'winning', 'their', 'first', 'title', 'the', 'spanish', 'side', 'looking', 'flex', 'muscles', 'europe', 'again', 'had', 'taken', 'the', 'lead', 'raphinha', 'found', '2-1', 'the', 'break', 'after', 'two', 'quick', 'goals', 'the', 'host']\n",
+            "Token setelah di lemmatization : ['barcelona', 'secure', '3-2', 'comeback', 'win', 'away', 'paris', 'saint-germain', 'first', 'leg', 'champion', 'league', 'quarterfinal', 'tie', 'wednesday', 'serve', 'blow', 'parisians', 'hop', 'win', 'their', 'first', 'title', 'the', 'spanish', 'side', 'look', 'flex', 'muscle', 'europe', 'again', 'have', 'take', 'the', 'lead', 'raphinha', 'find', '2-1', 'the', 'break', 'after', 'two', 'quick', 'goals', 'the', 'host']\n",
+            "\n",
+            "Token sebelum di lemmatization : ['asian', 'stocks', 'fell', 'thursday', 'disappointing', 'earnings', 'forecasts', 'facebook', 'parent', 'meta', 'platforms', 'nasdaq', 'meta', 'hammered', 'tech', 'shares', 'while', 'yen', \"'s\", 'slump', 'past', '155', 'per', 'dollar', 'first', 'time', 'since', '1990', 'raised', 'spectre', 'intervention', 'tokyo', '15', 'dive', 'shares', 'meta', 'extended', 'trading', 'the', 'instagram', 'parent', 'forecast', 'lighter-than-expected', 'current', 'quarter', 'revenue', 'higher', 'expenses', 'soured', 'the', 'mood', 'sparking', 'a', 'sell-off', 'u.s.', 'tech', 'tech-related', 'stocks']\n",
+            "Token setelah di lemmatization : ['asian', 'stock', 'fell', 'thursday', 'disappoint', 'earn', 'forecast', 'facebook', 'parent', 'meta', 'platforms', 'nasdaq', 'meta', 'hammer', 'tech', 'share', 'while', 'yen', \"'s\", 'slump', 'past', '155', 'per', 'dollar', 'first', 'time', 'since', '1990', 'raise', 'spectre', 'intervention', 'tokyo', '15', 'dive', 'share', 'meta', 'extend', 'trade', 'the', 'instagram', 'parent', 'forecast', 'lighter-than-expected', 'current', 'quarter', 'revenue', 'higher', 'expense', 'sour', 'the', 'mood', 'spark', 'a', 'sell-off', 'u.s.', 'tech', 'tech-related', 'stock']\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# **Ubah Kembali Menjadi String & Gabungkan Hasilnya**"
+      ],
+      "metadata": {
+        "id": "exF2dBS8ZX05"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Proses mengubah list menjadi teks\n",
+        "token_kesehatan_mental_lemmatized_text = \" \".join(token_kesehatan_mental_lemmatized)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_kesehatan_mental_lemmatized_text)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "JsbWG7yoaC63",
+        "outputId": "cc7f8068-7167-4d7a-c866-0e9ce6c18458"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "mental health include emotional psychological social well-being it affect we think feel and act and help determine we handle stress relate others and make choices mental health important every stage life from childhood and adolescence adulthood over course your life if experience mental health problems your think mood and behavior could affect\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Proses mengubah list menjadi teks\n",
+        "token_sepak_bola_lemmatized_text = \" \".join(token_sepak_bola_lemmatized)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_sepak_bola_lemmatized_text)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "2ie3tJUqZ1K6",
+        "outputId": "089cdb0d-cb3f-4932-c79e-65da38fe0dd4"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "barcelona secure 3-2 comeback win away paris saint-germain first leg champion league quarterfinal tie wednesday serve blow parisians hop win their first title the spanish side look flex muscle europe again have take the lead raphinha find 2-1 the break after two quick goals the host\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Proses mengubah list menjadi teks\n",
+        "token_pasar_saham_lemmatized_text = \" \".join(token_pasar_saham_lemmatized)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_pasar_saham_lemmatized_text)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "_FPPDUMXJqbD",
+        "outputId": "50e5c66d-7dcf-47a0-9452-792dee2d58bd"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "asian stock fell thursday disappoint earn forecast facebook parent meta platforms nasdaq meta hammer tech share while yen 's slump past 155 per dollar first time since 1990 raise spectre intervention tokyo 15 dive share meta extend trade the instagram parent forecast lighter-than-expected current quarter revenue higher expense sour the mood spark a sell-off u.s. tech tech-related stock\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Setelah itu gabungkan ketiga teks tersebut\n",
+        "teks_all_clean = [token_kesehatan_mental_lemmatized_text, token_sepak_bola_lemmatized_text, token_pasar_saham_lemmatized_text]"
+      ],
+      "metadata": {
+        "id": "60R6lbwgZV7Y"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "------"
+      ],
+      "metadata": {
+        "id": "0DJr8Qahdl8j"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# **Pembersihan Data Test**\n",
+        "\n",
+        "**Teks baru yang ingin diklasifikasikan topiknya:** <br>\n",
+        "\"Cristiano Ronaldo came off the bench to earn Manchester United a hard-fought 2-1 victory at Everton in the Premier League on Sunday, taking his career goal tally to 700 in the process. Just as United did last weekend in their derby mauling at the hands of local rivals Manchester City, they again found themselves behind early on at Goodison Park after Alex Iwobi curled a sublime strike into the net from 20 metres.\""
+      ],
+      "metadata": {
+        "id": "9jZuqkVwb6Nd"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "text_baru = \"Cristiano Ronaldo came off the bench to earn Manchester United a hard-fought 2-1 victory at Everton in the Premier League on Sunday, taking his career goal tally to 700 in the process. Just as United did last weekend in their derby mauling at the hands of local rivals Manchester City, they again found themselves behind early on at Goodison Park after Alex Iwobi curled a sublime strike into the net from 20 metres.\""
+      ],
+      "metadata": {
+        "id": "6oF4iBIlakAd"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Pastikan lower case"
+      ],
+      "metadata": {
+        "id": "cqiqO2p-dJOa"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Pastikan dalam lowercase\n",
+        "text_baru = text_baru.lower()"
+      ],
+      "metadata": {
+        "id": "U78J9SajcCdi"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Tokenization untuk memeriksa tiap kata (nantinya)"
+      ],
+      "metadata": {
+        "id": "ZJIO71ZvdLUO"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Import library nltk\n",
+        "from nltk import tokenize\n",
+        "\n",
+        "# Proses tokenisasi untuk teks baru\n",
+        "token_baru = tokenize.word_tokenize(text_baru)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_baru)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "KoGgMnVWb9d0",
+        "outputId": "3eedc4b8-b2ff-4c28-a286-c6f756761a91"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['cristiano', 'ronaldo', 'came', 'off', 'the', 'bench', 'to', 'earn', 'manchester', 'united', 'a', 'hard-fought', '2-1', 'victory', 'at', 'everton', 'in', 'the', 'premier', 'league', 'on', 'sunday', ',', 'taking', 'his', 'career', 'goal', 'tally', 'to', '700', 'in', 'the', 'process', '.', 'just', 'as', 'united', 'did', 'last', 'weekend', 'in', 'their', 'derby', 'mauling', 'at', 'the', 'hands', 'of', 'local', 'rivals', 'manchester', 'city', ',', 'they', 'again', 'found', 'themselves', 'behind', 'early', 'on', 'at', 'goodison', 'park', 'after', 'alex', 'iwobi', 'curled', 'a', 'sublime', 'strike', 'into', 'the', 'net', 'from', '20', 'metres', '.']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Hapus stopwords & punctuations"
+      ],
+      "metadata": {
+        "id": "SON-5O7rdQE5"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Import library\n",
+        "import string\n",
+        "from nltk import corpus\n",
+        "\n",
+        "# Stopwords pada bahasa inggris\n",
+        "stopword_english = corpus.stopwords.words('english')\n",
+        "\n",
+        "# Punctuations\n",
+        "str_punct = string.punctuation\n",
+        "\n",
+        "# Proses menghapus stopwords dan punctuations pada token baru\n",
+        "for kata in token_baru:\n",
+        "    if(kata in stopword_english or kata in str_punct):\n",
+        "        token_baru.remove(kata)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_baru)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "JagGrSJzcQ2t",
+        "outputId": "3586b4b1-c8a3-4382-ec85-9c5c9e9e7f36"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['cristiano', 'ronaldo', 'came', 'the', 'bench', 'earn', 'manchester', 'united', 'hard-fought', '2-1', 'victory', 'everton', 'the', 'premier', 'league', 'sunday', 'taking', 'career', 'goal', 'tally', '700', 'the', 'process', 'just', 'united', 'last', 'weekend', 'their', 'derby', 'mauling', 'the', 'hands', 'local', 'rivals', 'manchester', 'city', 'they', 'found', 'behind', 'early', 'at', 'goodison', 'park', 'alex', 'iwobi', 'curled', 'sublime', 'strike', 'the', 'net', '20', 'metres']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Lemmatization"
+      ],
+      "metadata": {
+        "id": "UCiiMJ5ldU1U"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Import library yang dibutuhkan\n",
+        "from nltk import stem\n",
+        "\n",
+        "# Buat object dari class WordNetLemmatizer\n",
+        "lemmatizer = stem.WordNetLemmatizer()\n",
+        "\n",
+        "# Buat list kosong untuk menampung hasil lemmatization\n",
+        "token_baru_lemmatized = list()\n",
+        "\n",
+        "# Proses lemmatization pada token baru\n",
+        "for kata in token_baru:\n",
+        "    lemmatized = lemmatizer.lemmatize(kata, pos = 'v')\n",
+        "    token_baru_lemmatized.append(lemmatized)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(token_baru_lemmatized)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "hZWd-ZTKcjXa",
+        "outputId": "89653730-4ea5-45b3-8d6b-bd9598862fc9"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['cristiano', 'ronaldo', 'come', 'the', 'bench', 'earn', 'manchester', 'unite', 'hard-fought', '2-1', 'victory', 'everton', 'the', 'premier', 'league', 'sunday', 'take', 'career', 'goal', 'tally', '700', 'the', 'process', 'just', 'unite', 'last', 'weekend', 'their', 'derby', 'maul', 'the', 'hand', 'local', 'rival', 'manchester', 'city', 'they', 'find', 'behind', 'early', 'at', 'goodison', 'park', 'alex', 'iwobi', 'curl', 'sublime', 'strike', 'the', 'net', '20', 'metres']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Ubah menjadi teks kembali"
+      ],
+      "metadata": {
+        "id": "RmKgVfF1dXl_"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Proses mengubah list menjadi teks\n",
+        "teks_baru_all_clean = ' '.join(token_baru_lemmatized)\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(teks_baru_all_clean)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xBldI4FMdZ5c",
+        "outputId": "0fb5b7a6-4fe3-49f9-cc2f-f4bbbc988253"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "cristiano ronaldo come the bench earn manchester unite hard-fought 2-1 victory everton the premier league sunday take career goal tally 700 the process just unite last weekend their derby maul the hand local rival manchester city they find behind early at goodison park alex iwobi curl sublime strike the net 20 metres\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# **Proses Klasifikasi Teks**"
+      ],
+      "metadata": {
+        "id": "3hlRHu_G4CL1"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Gabung Data Latih dan Data Test untuk dicari BoW nya"
+      ],
+      "metadata": {
+        "id": "DGrvMzbi4HrV"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Sebelum digabung (data latih)\n",
+        "print(teks_all_clean)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Cy7AQ7zg4IvG",
+        "outputId": "71649797-3dd8-4552-bcdf-4b7f28f3021b"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['mental health include emotional psychological social well-being it affect we think feel and act and help determine we handle stress relate others and make choices mental health important every stage life from childhood and adolescence adulthood over course your life if experience mental health problems your think mood and behavior could affect', 'barcelona secure 3-2 comeback win away paris saint-germain first leg champion league quarterfinal tie wednesday serve blow parisians hop win their first title the spanish side look flex muscle europe again have take the lead raphinha find 2-1 the break after two quick goals the host', \"asian stock fell thursday disappoint earn forecast facebook parent meta platforms nasdaq meta hammer tech share while yen 's slump past 155 per dollar first time since 1990 raise spectre intervention tokyo 15 dive share meta extend trade the instagram parent forecast lighter-than-expected current quarter revenue higher expense sour the mood spark a sell-off u.s. tech tech-related stock\"]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Gabung data latih dan data test\n",
+        "all_clean_text = teks_all_clean.copy()\n",
+        "all_clean_text.append(teks_baru_all_clean)\n",
+        "\n",
+        "# Setelah digabung (data latih + data test)\n",
+        "all_clean_text"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "zgudVXxf4KQ-",
+        "outputId": "0a5cfcb7-d0a4-424b-a30a-4c5fab858a45"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "['mental health include emotional psychological social well-being it affect we think feel and act and help determine we handle stress relate others and make choices mental health important every stage life from childhood and adolescence adulthood over course your life if experience mental health problems your think mood and behavior could affect',\n",
+              " 'barcelona secure 3-2 comeback win away paris saint-germain first leg champion league quarterfinal tie wednesday serve blow parisians hop win their first title the spanish side look flex muscle europe again have take the lead raphinha find 2-1 the break after two quick goals the host',\n",
+              " \"asian stock fell thursday disappoint earn forecast facebook parent meta platforms nasdaq meta hammer tech share while yen 's slump past 155 per dollar first time since 1990 raise spectre intervention tokyo 15 dive share meta extend trade the instagram parent forecast lighter-than-expected current quarter revenue higher expense sour the mood spark a sell-off u.s. tech tech-related stock\",\n",
+              " 'cristiano ronaldo come the bench earn manchester unite hard-fought 2-1 victory everton the premier league sunday take career goal tally 700 the process just unite last weekend their derby maul the hand local rival manchester city they find behind early at goodison park alex iwobi curl sublime strike the net 20 metres']"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 101
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Bag Of Words"
+      ],
+      "metadata": {
+        "id": "fRcg_BPJZOJQ"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.feature_extraction.text import CountVectorizer\n",
+        "\n",
+        "# Membuat objek CountVectorizer\n",
+        "vectorizer = CountVectorizer()\n",
+        "\n",
+        "# Mengubah teks menjadi vektor fitur\n",
+        "vektor_fitur = vectorizer.fit_transform(all_clean_text).toarray()\n",
+        "\n",
+        "# Mendapatkan daftar fitur\n",
+        "fitur = vectorizer.get_feature_names_out()\n",
+        "\n",
+        "# Menampilkan hasil\n",
+        "print(\"Daftar Fitur:\")\n",
+        "print(fitur)\n",
+        "\n",
+        "print(\"\\nVektor Fitur:\")\n",
+        "print(vektor_fitur)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "IYkZlNxQZQEt",
+        "outputId": "4be3cf3f-15d0-4f5e-ffc5-2de2c5bb8f10"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Daftar Fitur:\n",
+            "['15' '155' '1990' '20' '700' 'act' 'adolescence' 'adulthood' 'affect'\n",
+            " 'after' 'again' 'alex' 'and' 'asian' 'at' 'away' 'barcelona' 'behavior'\n",
+            " 'behind' 'being' 'bench' 'blow' 'break' 'career' 'champion' 'childhood'\n",
+            " 'choices' 'city' 'come' 'comeback' 'could' 'course' 'cristiano' 'curl'\n",
+            " 'current' 'derby' 'determine' 'disappoint' 'dive' 'dollar' 'early' 'earn'\n",
+            " 'emotional' 'europe' 'everton' 'every' 'expected' 'expense' 'experience'\n",
+            " 'extend' 'facebook' 'feel' 'fell' 'find' 'first' 'flex' 'forecast'\n",
+            " 'fought' 'from' 'germain' 'goal' 'goals' 'goodison' 'hammer' 'hand'\n",
+            " 'handle' 'hard' 'have' 'health' 'help' 'higher' 'hop' 'host' 'if'\n",
+            " 'important' 'include' 'instagram' 'intervention' 'it' 'iwobi' 'just'\n",
+            " 'last' 'lead' 'league' 'leg' 'life' 'lighter' 'local' 'look' 'make'\n",
+            " 'manchester' 'maul' 'mental' 'meta' 'metres' 'mood' 'muscle' 'nasdaq'\n",
+            " 'net' 'off' 'others' 'over' 'parent' 'paris' 'parisians' 'park' 'past'\n",
+            " 'per' 'platforms' 'premier' 'problems' 'process' 'psychological'\n",
+            " 'quarter' 'quarterfinal' 'quick' 'raise' 'raphinha' 'relate' 'related'\n",
+            " 'revenue' 'rival' 'ronaldo' 'saint' 'secure' 'sell' 'serve' 'share'\n",
+            " 'side' 'since' 'slump' 'social' 'sour' 'spanish' 'spark' 'spectre'\n",
+            " 'stage' 'stock' 'stress' 'strike' 'sublime' 'sunday' 'take' 'tally'\n",
+            " 'tech' 'than' 'the' 'their' 'they' 'think' 'thursday' 'tie' 'time'\n",
+            " 'title' 'tokyo' 'trade' 'two' 'unite' 'victory' 'we' 'wednesday'\n",
+            " 'weekend' 'well' 'while' 'win' 'yen' 'your']\n",
+            "\n",
+            "Vektor Fitur:\n",
+            "[[0 0 0 0 0 1 1 1 2 0 0 0 5 0 0 0 0 1 0 1 0 0 0 0 0 1 1 0 0 0 1 1 0 0 0 0\n",
+            "  1 0 0 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 3 1 0 0\n",
+            "  0 1 1 1 0 0 1 0 0 0 0 0 0 2 0 0 0 1 0 0 3 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0\n",
+            "  0 0 1 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 1 0 0 0 0 0\n",
+            "  0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 2 0 0 1 0 0 0 2]\n",
+            " [0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 1 1 0 0 0 0 1 1 0 1 0 0 0 0 1 0 0 0 0 0 0\n",
+            "  0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 2 1 0 0 0 1 0 1 0 0 0 0 0 1 0 0 0 1\n",
+            "  1 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 1 0 0 0\n",
+            "  0 0 0 0 0 0 1 1 0 1 0 0 0 0 0 1 1 0 1 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0\n",
+            "  0 0 4 1 0 0 0 1 0 1 0 0 1 0 0 0 1 0 0 0 2 0 0]\n",
+            " [1 1 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0\n",
+            "  0 1 1 1 0 1 0 0 0 0 1 1 0 1 1 0 1 0 1 0 2 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0\n",
+            "  0 0 0 0 1 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 3 0 1 0 1 0 1 0 0 2 0 0 0 1 1\n",
+            "  1 0 0 0 0 1 0 0 1 0 0 1 1 0 0 0 0 1 0 2 0 1 1 0 1 0 1 1 0 2 0 0 0 0 0 0\n",
+            "  3 1 2 0 0 0 1 0 1 0 1 1 0 0 0 0 0 0 0 1 0 1 0]\n",
+            " [0 0 0 1 1 0 0 0 0 0 0 1 0 0 1 0 0 0 1 0 1 0 0 1 0 0 0 1 1 0 0 0 1 1 0 1\n",
+            "  0 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 1 0 1 0 1 0 1 0 0 0 0 0\n",
+            "  0 0 0 0 0 0 0 1 1 1 0 1 0 0 0 1 0 0 2 1 0 0 1 0 0 0 1 0 0 0 0 0 0 1 0 0\n",
+            "  0 1 0 1 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1\n",
+            "  0 0 5 1 1 0 0 0 0 0 0 0 0 2 1 0 0 1 0 0 0 0 0]]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import math\n",
+        "\n",
+        "# Normalisasi\n",
+        "bow_texts_norm = []\n",
+        "for bow in vektor_fitur:\n",
+        "    length = math.sqrt(sum(i*i for i in bow))\n",
+        "    bow_norm = bow / length\n",
+        "    bow_texts_norm.append(bow_norm)\n",
+        "    print('Bow : ', bow)\n",
+        "    print('Panjang : ', length)\n",
+        "    print('Normalisasi : ', bow_norm, '\\n')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "wxwcYSS4d_08",
+        "outputId": "b1ef2483-cc25-4089-c7fb-c5fbacccbb7c"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Bow :  [0 0 0 0 0 1 1 1 2 0 0 0 5 0 0 0 0 1 0 1 0 0 0 0 0 1 1 0 0 0 1 1 0 0 0 0 1\n",
+            " 0 0 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 3 1 0 0 0 1\n",
+            " 1 1 0 0 1 0 0 0 0 0 0 2 0 0 0 1 0 0 3 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 0 1\n",
+            " 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0\n",
+            " 0 2 0 0 0 0 0 0 0 0 0 2 0 0 1 0 0 0 2]\n",
+            "Panjang :  9.746794344808963\n",
+            "Normalisasi :  [0.         0.         0.         0.         0.         0.10259784\n",
+            " 0.10259784 0.10259784 0.20519567 0.         0.         0.\n",
+            " 0.51298918 0.         0.         0.         0.         0.10259784\n",
+            " 0.         0.10259784 0.         0.         0.         0.\n",
+            " 0.         0.10259784 0.10259784 0.         0.         0.\n",
+            " 0.10259784 0.10259784 0.         0.         0.         0.\n",
+            " 0.10259784 0.         0.         0.         0.         0.\n",
+            " 0.10259784 0.         0.         0.10259784 0.         0.\n",
+            " 0.10259784 0.         0.         0.10259784 0.         0.\n",
+            " 0.         0.         0.         0.         0.10259784 0.\n",
+            " 0.         0.         0.         0.         0.         0.10259784\n",
+            " 0.         0.         0.30779351 0.10259784 0.         0.\n",
+            " 0.         0.10259784 0.10259784 0.10259784 0.         0.\n",
+            " 0.10259784 0.         0.         0.         0.         0.\n",
+            " 0.         0.20519567 0.         0.         0.         0.10259784\n",
+            " 0.         0.         0.30779351 0.         0.         0.10259784\n",
+            " 0.         0.         0.         0.         0.10259784 0.10259784\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.10259784 0.         0.10259784 0.\n",
+            " 0.         0.         0.         0.         0.10259784 0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.10259784\n",
+            " 0.         0.         0.         0.         0.10259784 0.\n",
+            " 0.10259784 0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.20519567\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.20519567 0.         0.\n",
+            " 0.10259784 0.         0.         0.         0.20519567] \n",
+            "\n",
+            "Bow :  [0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 1 1 0 0 0 0 1 1 0 1 0 0 0 0 1 0 0 0 0 0 0 0\n",
+            " 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 2 1 0 0 0 1 0 1 0 0 0 0 0 1 0 0 0 1 1 0\n",
+            " 0 0 0 0 0 0 0 0 1 1 1 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 1 0 0 0 0 0 0\n",
+            " 0 0 0 1 1 0 1 0 0 0 0 0 1 1 0 1 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 4 1\n",
+            " 0 0 0 1 0 1 0 0 1 0 0 0 1 0 0 0 2 0 0]\n",
+            "Panjang :  7.810249675906654\n",
+            "Normalisasi :  [0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.12803688 0.12803688 0.\n",
+            " 0.         0.         0.         0.12803688 0.12803688 0.\n",
+            " 0.         0.         0.         0.12803688 0.12803688 0.\n",
+            " 0.12803688 0.         0.         0.         0.         0.12803688\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.12803688 0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.12803688\n",
+            " 0.25607376 0.12803688 0.         0.         0.         0.12803688\n",
+            " 0.         0.12803688 0.         0.         0.         0.\n",
+            " 0.         0.12803688 0.         0.         0.         0.12803688\n",
+            " 0.12803688 0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.12803688 0.12803688\n",
+            " 0.12803688 0.         0.         0.         0.12803688 0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.12803688 0.         0.         0.         0.         0.\n",
+            " 0.         0.12803688 0.12803688 0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.12803688 0.12803688 0.         0.12803688 0.         0.\n",
+            " 0.         0.         0.         0.12803688 0.12803688 0.\n",
+            " 0.12803688 0.         0.12803688 0.         0.         0.\n",
+            " 0.         0.12803688 0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.12803688 0.\n",
+            " 0.         0.         0.51214752 0.12803688 0.         0.\n",
+            " 0.         0.12803688 0.         0.12803688 0.         0.\n",
+            " 0.12803688 0.         0.         0.         0.12803688 0.\n",
+            " 0.         0.         0.25607376 0.         0.        ] \n",
+            "\n",
+            "Bow :  [1 1 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0\n",
+            " 1 1 1 0 1 0 0 0 0 1 1 0 1 1 0 1 0 1 0 2 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0\n",
+            " 0 0 1 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 3 0 1 0 1 0 1 0 0 2 0 0 0 1 1 1 0 0\n",
+            " 0 0 1 0 0 1 0 0 1 1 0 0 0 0 1 0 2 0 1 1 0 1 0 1 1 0 2 0 0 0 0 0 0 3 1 2 0\n",
+            " 0 0 1 0 1 0 1 1 0 0 0 0 0 0 0 1 0 1 0]\n",
+            "Panjang :  9.0\n",
+            "Normalisasi :  [0.11111111 0.11111111 0.11111111 0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.11111111 0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.11111111 0.\n",
+            " 0.         0.11111111 0.11111111 0.11111111 0.         0.11111111\n",
+            " 0.         0.         0.         0.         0.11111111 0.11111111\n",
+            " 0.         0.11111111 0.11111111 0.         0.11111111 0.\n",
+            " 0.11111111 0.         0.22222222 0.         0.         0.\n",
+            " 0.         0.         0.         0.11111111 0.         0.\n",
+            " 0.         0.         0.         0.         0.11111111 0.\n",
+            " 0.         0.         0.         0.         0.11111111 0.11111111\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.11111111 0.         0.         0.\n",
+            " 0.         0.         0.         0.33333333 0.         0.11111111\n",
+            " 0.         0.11111111 0.         0.11111111 0.         0.\n",
+            " 0.22222222 0.         0.         0.         0.11111111 0.11111111\n",
+            " 0.11111111 0.         0.         0.         0.         0.11111111\n",
+            " 0.         0.         0.11111111 0.         0.         0.11111111\n",
+            " 0.11111111 0.         0.         0.         0.         0.11111111\n",
+            " 0.         0.22222222 0.         0.11111111 0.11111111 0.\n",
+            " 0.11111111 0.         0.11111111 0.11111111 0.         0.22222222\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.33333333 0.11111111 0.22222222 0.         0.         0.\n",
+            " 0.11111111 0.         0.11111111 0.         0.11111111 0.11111111\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.11111111 0.         0.11111111 0.        ] \n",
+            "\n",
+            "Bow :  [0 0 0 1 1 0 0 0 0 0 0 1 0 0 1 0 0 0 1 0 1 0 0 1 0 0 0 1 1 0 0 0 1 1 0 1 0\n",
+            " 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 1 0 1 0 1 0 1 0 0 0 0 0 0 0\n",
+            " 0 0 0 0 0 1 1 1 0 1 0 0 0 1 0 0 2 1 0 0 1 0 0 0 1 0 0 0 0 0 0 1 0 0 0 1 0\n",
+            " 1 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 0 0 5 1\n",
+            " 1 0 0 0 0 0 0 0 0 2 1 0 0 1 0 0 0 0 0]\n",
+            "Panjang :  8.717797887081348\n",
+            "Normalisasi :  [0.         0.         0.         0.11470787 0.11470787 0.\n",
+            " 0.         0.         0.         0.         0.         0.11470787\n",
+            " 0.         0.         0.11470787 0.         0.         0.\n",
+            " 0.11470787 0.         0.11470787 0.         0.         0.11470787\n",
+            " 0.         0.         0.         0.11470787 0.11470787 0.\n",
+            " 0.         0.         0.11470787 0.11470787 0.         0.11470787\n",
+            " 0.         0.         0.         0.         0.11470787 0.11470787\n",
+            " 0.         0.         0.11470787 0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.11470787\n",
+            " 0.         0.         0.         0.11470787 0.         0.\n",
+            " 0.11470787 0.         0.11470787 0.         0.11470787 0.\n",
+            " 0.11470787 0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.11470787 0.11470787 0.11470787 0.         0.11470787\n",
+            " 0.         0.         0.         0.11470787 0.         0.\n",
+            " 0.22941573 0.11470787 0.         0.         0.11470787 0.\n",
+            " 0.         0.         0.11470787 0.         0.         0.\n",
+            " 0.         0.         0.         0.11470787 0.         0.\n",
+            " 0.         0.11470787 0.         0.11470787 0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.11470787 0.11470787 0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.11470787 0.11470787 0.11470787 0.11470787 0.11470787\n",
+            " 0.         0.         0.57353933 0.11470787 0.11470787 0.\n",
+            " 0.         0.         0.         0.         0.         0.\n",
+            " 0.         0.22941573 0.11470787 0.         0.         0.11470787\n",
+            " 0.         0.         0.         0.         0.        ] \n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Perhitungan similarity menggunakan dot product\n",
+        "similarity_vector = []\n",
+        "banyak_data_latih = len(bow_texts_norm) - 1\n",
+        "\n",
+        "bow_norm_query = bow_texts_norm[banyak_data_latih]\n",
+        "for bow in bow_texts_norm[:banyak_data_latih]:\n",
+        "    similarity_vector.append(sum(i*j for i, j in zip(bow, bow_norm_query)))\n",
+        "\n",
+        "# Tampilkan hasilnya\n",
+        "print(similarity_vector)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "4lK4UA625VyG",
+        "outputId": "6d205a52-74b2-4011-a511-322694813ecd"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[0.0, 0.35248409726762797, 0.14019850403200995]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Proses pencarian similarity paling tinggi\n",
+        "id_max_sim = similarity_vector.index(max(similarity_vector))\n",
+        "\n",
+        "if (id_max_sim == 0):\n",
+        "    print (\"Teks baru diklasifikasikan dalam topik Kesehatan Mental\")\n",
+        "elif (id_max_sim == 1):\n",
+        "    print (\"Teks baru diklasifikasikan dalam topik Sepak Bola\")\n",
+        "elif (id_max_sim == 2):\n",
+        "    print (\"Teks baru diklasifikasikan dalam topik Pasar Saham\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "iT-jvsGQ52kA",
+        "outputId": "38604831-70ad-4905-fc7c-765c2bcc5a66"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Teks baru diklasifikasikan dalam topik Sepak Bola\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
